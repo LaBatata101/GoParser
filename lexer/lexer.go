@@ -7,6 +7,8 @@ import (
 
 type escapedCharCtx int
 
+const BOM = 0xFEFF
+
 const (
 	StringCtx escapedCharCtx = iota
 	RuneCtx
