@@ -270,7 +270,7 @@ type Token struct {
 }
 
 func (t Token) String() string {
-	return fmt.Sprintf("%s %d..%d", t.kind, t.pos.Start, t.pos.End)
+	return fmt.Sprintf("%s@%d..%d", t.kind, t.pos.Start, t.pos.End)
 }
 
 func (t *Token) Kind() TokenKind {
