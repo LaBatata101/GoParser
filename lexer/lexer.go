@@ -90,7 +90,7 @@ func (l *Lexer) eatIf(predicate func(rune) bool) bool {
 func (l *Lexer) lexKeywordOrIdentifier() Token {
 	l.tokenStart()
 	l.eatWhile(func(char rune) bool {
-		return isAsciiAlphabetic(char) || char == '_' || unicode.IsLetter(char)
+		return isAsciiAlphabetic(char) || isDecimalDigit(char) || char == '_' || unicode.IsLetter(char)
 	})
 
 	// TODO: Use a perfect hash table
