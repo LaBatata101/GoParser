@@ -207,12 +207,6 @@ func (l *Lexer) lexLineComment() Token {
 	l.tokenStart()
 	l.eatWhile(func(char rune) bool { return char != '\n' && char != '\r' })
 
-	if l.eatChar('\r') {
-		l.eatChar('\n')
-	} else {
-		l.eatChar('\n')
-	}
-
 	return Token{Comment, l.tokenPos()}
 }
 
