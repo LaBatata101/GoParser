@@ -477,7 +477,7 @@ func (l *Lexer) Lex() []Token {
 			l.bump()
 			kind := Minus
 			switch l.first() {
-			case '+':
+			case '-':
 				l.bump()
 				kind = MinusMinus
 			case '=':
