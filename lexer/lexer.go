@@ -100,6 +100,8 @@ func (l *Lexer) lexKeywordOrIdentifier() Token {
 		kind = KwBreak
 	case "case":
 		kind = KwCase
+	case "chan":
+		kind = KwChan
 	case "const":
 		kind = KwConst
 	case "continue":
@@ -141,7 +143,7 @@ func (l *Lexer) lexKeywordOrIdentifier() Token {
 	case "switch":
 		kind = KwSwitch
 	case "type":
-		kind = KwSwitch
+		kind = KwType
 	case "var":
 		kind = KwVar
 	default:
