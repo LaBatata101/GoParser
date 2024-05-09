@@ -3,6 +3,7 @@ package lexer
 import (
 	"fmt"
 	"unicode"
+	"unicode/utf8"
 )
 
 type escapedCharCtx int
@@ -90,7 +91,14 @@ func (l *Lexer) eatIf(predicate func(rune) bool) bool {
 func (l *Lexer) lexKeywordOrIdentifier() Token {
 	l.tokenStart()
 	l.eatWhile(func(char rune) bool {
-		return isAsciiAlphabetic(char) || isDecimalDigit(char) || char == '_' || unicode.IsLetter(char)
+		switch {
+		case unicode.IsLetter(char) || char == '_' || unicode.IsDigit(char): // ok
+		case char >= utf8.RuneSelf:
+			l.addLexError(fmt.Sprintf("invalid character %#U in identifier", char), l.tokenPos())
+		default:
+			return false
+		}
+		return true
 	})
 
 	// TODO: Use a perfect hash table
@@ -590,7 +598,7 @@ func (l *Lexer) Lex() []Token {
 		case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
 			tokens = append(tokens, l.lexNumber())
 		default:
-			if isAsciiAlphabetic(char) || unicode.IsLetter(char) || char == '_' {
+			if isAsciiAlphabetic(char) || unicode.IsLetter(char) || char == '_' || char >= utf8.RuneSelf {
 				tokens = append(tokens, l.lexKeywordOrIdentifier())
 			} else {
 				l.bump()
