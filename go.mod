@@ -2,7 +2,7 @@ module parser
 
 go 1.22.0
 
-require github.com/LaBatata101/goinsta v1.0.1
+require github.com/LaBatata101/goinsta v1.1.0
 
 require (
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
