@@ -383,7 +383,7 @@ func (l *Lexer) lexNumber() Token {
 
 	switch {
 	case l.eatChar('x') || l.eatChar('X'):
-		l.eatWhile(func(char rune) bool { return isHexDigit(char) || (char == '_' && isDecimalDigit(l.second())) })
+		l.eatWhile(func(char rune) bool { return isHexDigit(char) || (char == '_' && isHexDigit(l.second())) })
 		kind = HexLit
 	case l.eatChar('o') || l.eatChar('O'):
 		l.eatWhile(func(char rune) bool { return isOctalDigit(char) || (char == '_' && isDecimalDigit(l.second())) })
