@@ -1,6 +1,8 @@
 package lexer
 
 import (
+	"bufio"
+	"bytes"
 	"fmt"
 	"unicode"
 	"unicode/utf8"
@@ -22,6 +24,7 @@ type (
 	}
 
 	Lexer struct {
+		reader        *bufio.Reader
 		data          []byte
 		lexErrors     []LexError
 		pos           int
@@ -43,15 +46,21 @@ func (l *Lexer) isEOF() bool {
 
 // Consumes the current character.
 func (l *Lexer) bump() rune {
-	idx := l.pos
-	if !l.isEOF() {
-		l.pos++
+	r, size, err := l.reader.ReadRune()
+	if err != nil {
+		l.addLexError("invalid UTF-8 encoding", Position{Start: l.pos, End: l.pos + size})
 	}
-	return rune(l.data[idx])
+
+	if !l.isEOF() {
+		l.pos += size
+	}
+
+	return r
 }
 
 // Returns the current character of the stream without consuming it.
 // If the lexer reached EOF, returns 0.
+// TODO: This probably won't work as intented if the character is multi-byte
 func (l *Lexer) first() rune {
 	if l.isEOF() {
 		return 0
@@ -677,7 +686,8 @@ func (l *Lexer) Lex() ([]Token, []LexError) {
 
 func NewLexer(data []byte) Lexer {
 	return Lexer{
-		data: data,
+		reader: bufio.NewReader(bytes.NewReader(data)),
+		data:   data,
 	}
 }
 
