@@ -73,11 +73,14 @@ func (l *Lexer) eatChar(char rune) bool {
 	return false
 }
 
-func (l *Lexer) eatWhile(predicate func(rune) bool) {
+// Consume characters while `predicate` is true. Stop consuming when EOF is reached.
+// Return whether any character was consumed or not.
+func (l *Lexer) eatWhile(predicate func(rune) bool) bool {
+	start := l.pos
 	for !l.isEOF() && predicate(l.first()) {
 		l.bump()
 	}
-
+	return start != l.pos
 }
 
 func (l *Lexer) eatIf(predicate func(rune) bool) bool {
@@ -381,8 +384,10 @@ func (l *Lexer) lexFloatNumber() Token {
 	return Token{kind, l.tokenPos()}
 }
 
-func (l *Lexer) consumeDecimalNumber() {
-	l.eatWhile(func(char rune) bool { return isDecimalDigit(char) || (char == '_' && isDecimalDigit(l.second())) })
+func (l *Lexer) consumeDecimalNumber() bool {
+	return l.eatWhile(func(char rune) bool {
+		return isDecimalDigit(char) || (char == '_' && isDecimalDigit(l.second()))
+	})
 }
 
 func (l *Lexer) lexNumber() Token {
@@ -395,6 +400,13 @@ func (l *Lexer) lexNumber() Token {
 	case l.eatChar('x') || l.eatChar('X'):
 		l.eatWhile(func(char rune) bool { return isHexDigit(char) || (char == '_' && isHexDigit(l.second())) })
 		kind = HexLit
+		switch l.first() {
+		case '.':
+			l.bump()
+			return l.lexHexFloat()
+		case 'p', 'P':
+			return l.lexHexFloat()
+		}
 	case l.eatChar('o') || l.eatChar('O'):
 		l.eatWhile(func(char rune) bool { return isOctalDigit(char) || (char == '_' && isDecimalDigit(l.second())) })
 		kind = OctalLit
@@ -413,6 +425,36 @@ func (l *Lexer) lexNumber() Token {
 
 	if l.eatChar('_') {
 		l.addIllegalTokenError(&kind, "`_` must separate successive digits")
+	}
+
+	if l.eatChar('i') {
+		kind = ImaginaryLit
+	}
+
+	return Token{kind, l.tokenPos()}
+}
+
+func (l *Lexer) lexHexFloat() Token {
+	kind := HexFloat
+	consumed := l.eatWhile(func(char rune) bool {
+		return isHexDigit(char) || (char == '_' && isHexDigit(l.second()))
+	})
+
+	if l.eatChar('p') || l.eatChar('P') {
+		consumed = true
+		switch l.first() {
+		case '+', '-':
+			l.bump()
+		}
+		if !l.consumeDecimalNumber() {
+			l.addLexError("exponent has no digits", l.tokenPos())
+		}
+	} else {
+		l.addLexError("hexadecimal mantissa requires a 'p' exponent", l.tokenPos())
+	}
+
+	if !consumed {
+		l.addLexError("hexadecimal literal has no digits", l.tokenPos())
 	}
 
 	if l.eatChar('i') {
