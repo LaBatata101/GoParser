@@ -370,7 +370,9 @@ func (l *Lexer) lexFloatNumber() Token {
 		case '+', '-':
 			l.bump()
 		}
-		l.consumeDecimalNumber()
+		if !l.consumeDecimalNumber() {
+			l.addLexError("exponent has no digits", l.tokenPos())
+		}
 	}
 
 	if l.eatChar('_') {
@@ -398,8 +400,10 @@ func (l *Lexer) lexNumber() Token {
 
 	switch {
 	case l.eatChar('x') || l.eatChar('X'):
-		l.eatWhile(func(char rune) bool { return isHexDigit(char) || (char == '_' && isHexDigit(l.second())) })
 		kind = HexLit
+		consumed := l.eatWhile(func(char rune) bool {
+			return isHexDigit(char) || (char == '_' && isHexDigit(l.second()))
+		})
 		switch l.first() {
 		case '.':
 			l.bump()
@@ -407,14 +411,25 @@ func (l *Lexer) lexNumber() Token {
 		case 'p', 'P':
 			return l.lexHexFloat()
 		}
+		if !consumed {
+			l.addLexError("hexadecimal literal has no digits", l.tokenPos())
+		}
 	case l.eatChar('o') || l.eatChar('O'):
-		l.eatWhile(func(char rune) bool { return isOctalDigit(char) || (char == '_' && isDecimalDigit(l.second())) })
 		kind = OctalLit
+		consumed := l.eatWhile(func(char rune) bool {
+			return isOctalDigit(char) || (char == '_' && isDecimalDigit(l.second()))
+		})
+		if !consumed {
+			l.addLexError("octal literal has no digits", l.tokenPos())
+		}
 	case l.eatChar('b') || l.eatChar('B'):
-		l.eatWhile(func(char rune) bool {
+		kind = BinaryLit
+		consumed := l.eatWhile(func(char rune) bool {
 			return char == '0' || char == '1' || (char == '_' && isDecimalDigit(l.second()))
 		})
-		kind = BinaryLit
+		if !consumed {
+			l.addLexError("binary literal has no digits", l.tokenPos())
+		}
 	default: // lex a decimal number or float number
 		l.consumeDecimalNumber()
 
