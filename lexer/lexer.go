@@ -418,7 +418,12 @@ func (l *Lexer) lexNumber() Token {
 	default: // lex a decimal number or float number
 		l.consumeDecimalNumber()
 
-		if l.eatChar('.') { // lex the fractional part of the float
+		// lex the fractional part of the float
+		switch l.first() {
+		case '.':
+			l.bump()
+			return l.lexFloatNumber()
+		case 'e', 'E':
 			return l.lexFloatNumber()
 		}
 	}
