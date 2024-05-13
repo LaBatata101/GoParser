@@ -17,20 +17,24 @@ const (
 
 type (
 	LexError struct {
-		msg string
-		pos Position
+		Msg string
+		Pos Position
 	}
 
 	Lexer struct {
 		data          []byte
-		lex_errors    []LexError
+		lexErrors     []LexError
 		pos           int
 		startTokenPos int
 	}
 )
 
+func (l LexError) String() string {
+	return fmt.Sprintf("ERROR: %s %s", l.Msg, l.Pos.String())
+}
+
 func (l *Lexer) Errors() []LexError {
-	return l.lex_errors
+	return l.lexErrors
 }
 
 func (l *Lexer) isEOF() bool {
@@ -205,7 +209,7 @@ func (l *Lexer) addIllegalTokenError(kind *TokenKind, msg string) {
 }
 
 func (l *Lexer) addLexError(msg string, pos Position) {
-	l.lex_errors = append(l.lex_errors, LexError{msg, pos})
+	l.lexErrors = append(l.lexErrors, LexError{msg, pos})
 }
 
 func (l *Lexer) lexNewline() Token {

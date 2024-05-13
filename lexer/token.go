@@ -265,18 +265,14 @@ type Position struct {
 }
 
 type Token struct {
-	kind TokenKind
-	pos  Position
+	Kind TokenKind
+	Pos  Position
 }
 
 func (t Token) String() string {
-	return fmt.Sprintf("%s@%d..%d", t.kind, t.pos.Start, t.pos.End)
+	return fmt.Sprintf("%s@%s", t.Kind, t.Pos.String())
 }
 
-func (t *Token) Kind() TokenKind {
-	return t.kind
-}
-
-func (t *Token) Pos() Position {
-	return t.pos
+func (p Position) String() string {
+	return fmt.Sprintf("%d..%d", p.Start, p.End)
 }
