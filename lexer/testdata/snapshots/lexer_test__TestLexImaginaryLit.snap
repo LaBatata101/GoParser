@@ -1,0 +1,30 @@
+---
+source: /home/labatata/Code/Go/GoParser/lexer/lexer_test.go
+assertion_line: 163
+---
+[]string{
+  "Imaginary@0..2 0i",
+  "Newline@2..3 \n",
+  "Imaginary@3..8 0123i",
+  "Newline@8..9 \n",
+  "Imaginary@9..15 0o123i",
+  "Newline@15..16 \n",
+  "Imaginary@16..22 0xabci",
+  "Newline@22..23 \n",
+  "Imaginary@23..26 0.i",
+  "Newline@26..27 \n",
+  "Imaginary@27..35 2.71828i",
+  "Newline@35..36 \n",
+  "Imaginary@36..42 1.e+0i",
+  "Newline@42..43 \n",
+  "Imaginary@43..55 6.67428e-11i",
+  "Newline@55..56 \n",
+  "Imaginary@56..60 1E6i",
+  "Newline@60..61 \n",
+  "Imaginary@61..65 .25i",
+  "Newline@65..66 \n",
+  "Imaginary@66..76 .12345E+5i",
+  "Newline@76..77 \n",
+  "Imaginary@77..84 0x1p-2i",
+  "EOF@84..84 ",
+}

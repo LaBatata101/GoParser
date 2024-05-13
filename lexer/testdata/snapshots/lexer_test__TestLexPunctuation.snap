@@ -1,0 +1,18 @@
+---
+source: /home/labatata/Code/Go/GoParser/lexer/lexer_test.go
+assertion_line: 99
+---
+[]string{
+  "Lparen@0..1 (",
+  "Rparen@1..2 )",
+  "Lsqb@3..4 [",
+  "Rsqb@4..5 ]",
+  "Lbrace@6..7 {",
+  "Rbrace@7..8 }",
+  "Comma@9..10 ,",
+  "SemiColon@11..12 ;",
+  "Ellipsis@13..16 ...",
+  "Dot@17..18 .",
+  "Colon@19..20 :",
+  "EOF@20..20 ",
+}

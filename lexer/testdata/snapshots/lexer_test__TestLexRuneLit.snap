@@ -1,0 +1,28 @@
+---
+source: /home/labatata/Code/Go/GoParser/lexer/lexer_test.go
+assertion_line: 181
+---
+[]string{
+  "Rune@0..3 'a'",
+  "Newline@3..4 \n",
+  "Rune@4..8 'ä'",
+  "Newline@8..9 \n",
+  "Rune@9..14 '本'",
+  "Newline@14..15 \n",
+  "Rune@15..19 '\\t'",
+  "Newline@19..20 \n",
+  "Rune@20..26 '\\000'",
+  "Newline@26..27 \n",
+  "Rune@27..33 '\\007'",
+  "Newline@33..34 \n",
+  "Rune@34..40 '\\377'",
+  "Newline@40..41 \n",
+  "Rune@41..47 '\\x07'",
+  "Newline@47..48 \n",
+  "Rune@48..54 '\\xff'",
+  "Newline@54..55 \n",
+  "Rune@55..63 '\\u12e4'",
+  "Newline@63..64 \n",
+  "Rune@64..76 '\\U00101234'",
+  "EOF@76..76 ",
+}

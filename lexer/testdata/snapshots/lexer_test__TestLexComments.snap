@@ -1,0 +1,11 @@
+---
+source: /home/labatata/Code/Go/GoParser/lexer/lexer_test.go
+assertion_line: 32
+---
+[]string{
+  "Comment@0..30 // This is a one line comment!",
+  "Newline@30..31 \n",
+  "Comment@31..84 /*\n    This\n    is\n    Multiline\n    Comment\n    !\n*/",
+  "Newline@84..85 \n",
+  "EOF@85..85 ",
+}

@@ -1,0 +1,20 @@
+---
+source: /home/labatata/Code/Go/GoParser/lexer/lexer_test.go
+assertion_line: 196
+---
+[]string{
+  "Newline@0..1 \n",
+  "String@1..5 \"\\n\"",
+  "Newline@5..6 \n",
+  "String@6..10 \"\\\"\"",
+  "Newline@10..11 \n",
+  "String@11..28 \"Hello, world!\\n\"",
+  "Newline@28..29 \n",
+  "String@29..40 \"日本語\"",
+  "Newline@40..41 \n",
+  "String@41..62 \"\\u65e5本\\U00008a9e\"",
+  "Newline@62..63 \n",
+  "String@63..75 \"\\xff\\u00FF\"",
+  "Newline@75..76 \n",
+  "EOF@76..76 ",
+}
