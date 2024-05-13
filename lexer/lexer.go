@@ -489,7 +489,7 @@ func (l *Lexer) lexHexFloat() Token {
 }
 
 // TODO: handle unexpected BOMs 0xFEFF
-func (l *Lexer) Lex() []Token {
+func (l *Lexer) Lex() ([]Token, []LexError) {
 	var tokens []Token
 
 	for !l.isEOF() {
@@ -672,7 +672,7 @@ func (l *Lexer) Lex() []Token {
 		}
 	}
 
-	return append(tokens, Token{Eof, Position{l.pos, l.pos}})
+	return append(tokens, Token{Eof, Position{l.pos, l.pos}}), l.lexErrors
 }
 
 func NewLexer(data []byte) Lexer {
