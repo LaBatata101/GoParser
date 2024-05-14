@@ -32,6 +32,13 @@ type (
 	}
 )
 
+func NewLexer(data []byte) Lexer {
+	return Lexer{
+		reader: bufio.NewReader(bytes.NewReader(data)),
+		data:   data,
+	}
+}
+
 func (l LexError) String() string {
 	return fmt.Sprintf("ERROR: %s %s", l.Msg, l.Pos.String())
 }
@@ -46,16 +53,27 @@ func (l *Lexer) isEOF() bool {
 
 // Consumes the current character.
 func (l *Lexer) bump() rune {
-	r, size, err := l.reader.ReadRune()
-	if err != nil {
-		l.addLexError("invalid UTF-8 encoding", Position{Start: l.pos, End: l.pos + size})
+	var size int
+	var char rune
+
+	// ASCII fast-path
+	if l.data[l.pos] < utf8.RuneSelf {
+		size = 1
+		char = rune(l.data[l.pos])
+	} else {
+		r, s, err := l.reader.ReadRune()
+		if err != nil {
+			l.addLexError("invalid UTF-8 encoding", Position{Start: l.pos, End: l.pos + size})
+		}
+		char = r
+		size = s
 	}
 
 	if !l.isEOF() {
 		l.pos += size
 	}
 
-	return r
+	return char
 }
 
 // Returns the current character of the stream without consuming it.
@@ -682,13 +700,6 @@ func (l *Lexer) Lex() ([]Token, []LexError) {
 	}
 
 	return append(tokens, Token{Eof, Position{l.pos, l.pos}}), l.lexErrors
-}
-
-func NewLexer(data []byte) Lexer {
-	return Lexer{
-		reader: bufio.NewReader(bytes.NewReader(data)),
-		data:   data,
-	}
 }
 
 func isAsciiAlphabetic(char rune) bool {
