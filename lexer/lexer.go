@@ -52,6 +52,8 @@ func (l *Lexer) isEOF() bool {
 }
 
 // Consumes the current character.
+// Returns `unicode.ReplacementChar (U+FFFD)` if the UTF-8 encoding is invalid.
+// TODO: handle unexpected BOMs 0xFEFF
 func (l *Lexer) bump() rune {
 	var size int
 	var char rune
@@ -77,13 +79,34 @@ func (l *Lexer) bump() rune {
 }
 
 // Returns the current character of the stream without consuming it.
-// If the lexer reached EOF, returns 0.
-// TODO: This probably won't work as intented if the character is multi-byte
+// If the lexer reached EOF, returns -1.
 func (l *Lexer) first() rune {
 	if l.isEOF() {
-		return 0
+		return -1
 	}
-	return rune(l.data[l.pos])
+
+	// ASCII fast-path
+	if l.data[l.pos] < utf8.RuneSelf {
+		return rune(l.data[l.pos])
+	}
+
+	var char rune
+	// Here we handle peeking multi-bytes UTF-8 characters.
+	// We skip reading one byte because the ASCII case is handled above.
+	// based on: https://gist.github.com/clipperhouse/add34daff16ac22449d21d4c0afc3fce#file-runereader-go-L21
+	for peekBytes := 2; peekBytes <= 4; peekBytes++ { // unicode rune can be up to 4 bytes
+		b, err := l.reader.Peek(peekBytes)
+		if err == nil {
+			r, size := utf8.DecodeRune(b)
+			char = r
+			if r == utf8.RuneError {
+				l.addLexError("invalid UTF-8 encoding", Position{Start: l.pos, End: l.pos + size})
+			}
+		}
+		// Otherwise, we ignore Peek errors and try the next smallest number of bytes
+	}
+
+	return char
 }
 
 // Returns the next character of the stream without consuming it.
@@ -515,7 +538,6 @@ func (l *Lexer) lexHexFloat() Token {
 	return Token{kind, l.tokenPos()}
 }
 
-// TODO: handle unexpected BOMs 0xFEFF
 func (l *Lexer) Lex() ([]Token, []LexError) {
 	var tokens []Token
 
