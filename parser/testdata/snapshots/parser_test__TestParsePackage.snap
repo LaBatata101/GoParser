@@ -1,0 +1,21 @@
+---
+source: /home/labatata/Code/Go/GoParser/parser/parser_test.go
+assertion_line: 25
+---
+ast.File{
+  Doc: nil,
+  Package: 0,
+  Name: &ast.Ident{
+    NamePos: 8,
+    Name: "foo",
+    Obj: nil,
+  },
+  Decls: nil,
+  FileStart: 0,
+  FileEnd: 11,
+  Scope: nil,
+  Imports: nil,
+  Unresolved: nil,
+  Comments: nil,
+  GoVersion: "",
+}
