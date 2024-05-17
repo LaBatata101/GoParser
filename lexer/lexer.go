@@ -62,6 +62,7 @@ func (l *Lexer) bump() rune {
 	if l.data[l.pos] < utf8.RuneSelf {
 		size = 1
 		char = rune(l.data[l.pos])
+		l.reader.Discard(size)
 	} else {
 		r, s, err := l.reader.ReadRune()
 		if err != nil {
@@ -97,11 +98,8 @@ func (l *Lexer) first() rune {
 	for peekBytes := 2; peekBytes <= 4; peekBytes++ { // unicode rune can be up to 4 bytes
 		b, err := l.reader.Peek(peekBytes)
 		if err == nil {
-			r, size := utf8.DecodeRune(b)
+			r, _ := utf8.DecodeRune(b)
 			char = r
-			if r == utf8.RuneError {
-				l.addLexError("invalid UTF-8 encoding", Position{Start: l.pos, End: l.pos + size})
-			}
 		}
 		// Otherwise, we ignore Peek errors and try the next smallest number of bytes
 	}

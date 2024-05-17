@@ -1,7 +1,6 @@
 package lexer_test
 
 import (
-	"fmt"
 	"parser/lexer"
 	"testing"
 
@@ -77,7 +76,6 @@ for
 import
 return
 var`)
-	fmt.Println(len(src))
 	lexer := lexer.NewLexer(src)
 	tokens, err := lexer.Lex()
 	assert.Snapshot(t, prettyPrint(tokens, err, src))
