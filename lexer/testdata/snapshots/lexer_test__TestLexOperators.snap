@@ -1,6 +1,6 @@
 ---
 source: /home/labatata/Code/Go/GoParser/lexer/lexer_test.go
-assertion_line: 92
+assertion_line: 93
 ---
 []string{
   "Plus@0..1 +",
@@ -10,7 +10,6 @@ assertion_line: 92
   "And@24..26 &&",
   "EqEqual@30..32 ==",
   "NotEq@36..38 !=",
-  "Newline@38..39 \n",
   "Minus@39..40 -",
   "Vbar@44..45 |",
   "MinusEq@50..52 -=",
@@ -19,7 +18,6 @@ assertion_line: 92
   "LessThan@69..70 <",
   "LessThanEq@75..77 <=",
   "Tilde@82..83 ~",
-  "Newline@83..84 \n",
   "Star@84..85 *",
   "Circumflex@89..90 ^",
   "StarEq@95..97 *=",
@@ -28,7 +26,6 @@ assertion_line: 92
   "GreaterThan@114..115 >",
   "GreaterThanEq@120..122 >=",
   "BitclearEq@127..130 &^=",
-  "Newline@130..131 \n",
   "Slash@131..132 /",
   "Lshift@136..138 <<",
   "SlashEq@142..144 /=",
@@ -37,7 +34,6 @@ assertion_line: 92
   "Equal@161..162 =",
   "ColonEq@167..169 :=",
   "Bitclear@174..176 &^",
-  "Newline@176..177 \n",
   "Percent@177..178 %",
   "Rshift@182..184 >>",
   "PercentEq@188..190 %=",

@@ -160,7 +160,6 @@ const (
 	KwVar
 
 	Illegal
-	Newline
 	Eof
 )
 
@@ -251,7 +250,6 @@ var tokenKindStrTable = [...]string{
 	"KwType",
 	"KwVar",
 	"Illegal",
-	"Newline",
 	"EOF",
 }
 

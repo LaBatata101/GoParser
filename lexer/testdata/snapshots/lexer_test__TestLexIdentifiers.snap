@@ -1,15 +1,15 @@
 ---
 source: /home/labatata/Code/Go/GoParser/lexer/lexer_test.go
-assertion_line: 43
+assertion_line: 50
 ---
 []string{
   "Identifier@0..1 a",
-  "Newline@1..2 \n",
+  "SemiColon@1..2 \n",
   "Identifier@2..5 _x9",
-  "Newline@5..6 \n",
+  "SemiColon@5..6 \n",
   "Identifier@6..28 ThisVariableIsExported",
-  "Newline@28..29 \n",
+  "SemiColon@28..29 \n",
   "Identifier@29..33 αβ",
-  "Newline@33..34 \n",
+  "SemiColon@33..34 \n",
   "EOF@34..34 ",
 }

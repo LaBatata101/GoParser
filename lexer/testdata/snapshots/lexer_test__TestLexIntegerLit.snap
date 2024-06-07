@@ -1,28 +1,29 @@
 ---
 source: /home/labatata/Code/Go/GoParser/lexer/lexer_test.go
-assertion_line: 116
+assertion_line: 119
 ---
 []string{
   "Decimal@0..2 42",
-  "Newline@2..3 \n",
+  "SemiColon@2..3 \n",
   "Decimal@3..6 4_2",
-  "Newline@6..7 \n",
+  "SemiColon@6..7 \n",
   "Decimal@7..11 0600",
-  "Newline@11..12 \n",
+  "SemiColon@11..12 \n",
   "Decimal@12..17 0_600",
-  "Newline@17..18 \n",
+  "SemiColon@17..18 \n",
   "Octal@18..23 0o600",
-  "Newline@23..24 \n",
+  "SemiColon@23..24 \n",
   "Octal@24..29 0O600",
-  "Newline@29..30 \n",
+  "SemiColon@29..30 \n",
   "HexDecimal@30..39 0xBadFace",
-  "Newline@39..40 \n",
+  "SemiColon@39..40 \n",
   "HexDecimal@40..50 0xBad_Face",
-  "Newline@50..51 \n",
+  "SemiColon@50..51 \n",
   "HexDecimal@51..71 0x_67_7a_2f_cc_40_c6",
-  "Newline@71..72 \n",
+  "SemiColon@71..72 \n",
   "Decimal@72..111 170141183460469231731687303715884105727",
-  "Newline@111..112 \n",
+  "SemiColon@111..112 \n",
   "Decimal@112..157 170_141183_460469_231731_687303_715884_105727",
+  "SemiColon@157..157 ",
   "EOF@157..157 ",
 }

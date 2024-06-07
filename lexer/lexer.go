@@ -29,13 +29,15 @@ type (
 		lexErrors     []LexError
 		pos           int
 		startTokenPos int
+		lastToken     TokenKind
 	}
 )
 
 func NewLexer(data []byte) Lexer {
 	return Lexer{
-		reader: bufio.NewReader(bytes.NewReader(data)),
-		data:   data,
+		reader:    bufio.NewReader(bytes.NewReader(data)),
+		data:      data,
+		lastToken: -1,
 	}
 }
 
@@ -258,14 +260,6 @@ func (l *Lexer) addIllegalTokenError(kind *TokenKind, msg string) {
 
 func (l *Lexer) addLexError(msg string, pos Position) {
 	l.lexErrors = append(l.lexErrors, LexError{msg, pos})
-}
-
-func (l *Lexer) lexNewline() Token {
-	l.tokenStart()
-	if l.bump() == '\r' {
-		l.eatChar('\n')
-	}
-	return Token{Newline, l.tokenPos()}
 }
 
 func (l *Lexer) lexLineComment() Token {
@@ -536,6 +530,16 @@ func (l *Lexer) lexHexFloat() Token {
 	return Token{kind, l.tokenPos()}
 }
 
+func (l *Lexer) insertSemicolon() bool {
+	switch l.lastToken {
+	case Identifier, KwBreak, KwContinue, KwFallthrough, KwReturn, DecimalLit, BinaryLit, OctalLit,
+		HexLit, ImaginaryLit, HexFloat, Float, Rune, String, PlusPlus, Minus, Rparen, Rbrace, Rsqb:
+		return true
+	default:
+		return false
+	}
+}
+
 func (l *Lexer) Lex() ([]Token, []LexError) {
 	var tokens []Token
 
@@ -545,7 +549,13 @@ func (l *Lexer) Lex() ([]Token, []LexError) {
 		case ' ', '\t':
 			l.skipWhiteSpace()
 		case '\n', '\r':
-			tokens = append(tokens, l.lexNewline())
+			if l.insertSemicolon() {
+				// TODO: check if the range is correct
+				tokens = append(tokens, Token{SemiColon, Position{l.pos, l.pos + 1}})
+			}
+			if l.bump() == '\r' {
+				l.eatChar('\n')
+			}
 		case '"':
 			tokens = append(tokens, l.lexString())
 		case '`':
@@ -717,6 +727,15 @@ func (l *Lexer) Lex() ([]Token, []LexError) {
 				l.bump()
 			}
 		}
+
+		if len(tokens) > 0 {
+			l.lastToken = tokens[len(tokens)-1].Kind
+		}
+	}
+	// Insert a SemiColon token before Eof
+	if l.insertSemicolon() {
+		// TODO: check if the range is correct
+		tokens = append(tokens, Token{SemiColon, Position{l.pos, l.pos}})
 	}
 
 	return append(tokens, Token{Eof, Position{l.pos, l.pos}}), l.lexErrors
